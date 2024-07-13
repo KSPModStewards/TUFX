@@ -1,24 +1,21 @@
 {
-	"NAME":"TUFX",
-	"URL":"https://raw.githubusercontent.com/KSPModStewards/TUFX/main/GameData/TUFX/TexturesUnlimitedFX.version",
-	"DOWNLOAD":"https://github.com/KSPModStewards/TUFX/releases",
-	"CHANGE_LOG_URL":"https://github.com/KSPModStewards/TUFX/CHANGELOG.md",
-	"VERSION":
-	{
-		"MAJOR":1,
-		"MINOR":0,
-		"PATCH":8
+	"NAME": "TUFX",
+	"URL": "https://raw.githubusercontent.com/KSPModStewards/TUFX/main/GameData/TUFX/TexturesUnlimitedFX.version",
+	"DOWNLOAD": "https://github.com/KSPModStewards/TUFX/releases",
+	"CHANGE_LOG_URL": "https://github.com/KSPModStewards/TUFX/blob/main/CHANGELOG.md",
+	"VERSION": {
+		"MAJOR": "1",
+		"MINOR": "0",
+		"PATCH": "8"
 	},
-	"KSP_VERSION_MIN":
-	{
-		"MAJOR":1,
-		"MINOR":12,
-		"PATCH":3
+	"KSP_VERSION_MIN": {
+		"MAJOR": 1,
+		"MINOR": 12,
+		"PATCH": 3
 	},
-	"KSP_VERSION_MAX":
-	{
-		"MAJOR":1,
-		"MINOR":12,
-		"PATCH":99
+	"KSP_VERSION_MAX": {
+		"MAJOR": 1,
+		"MINOR": 12,
+		"PATCH": 99
 	}
 }
