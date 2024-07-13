@@ -13,5 +13,6 @@ jobs:
     with:
       ksp-zip-url: https://github.com/KSPModdingLibs/KSPLibs/raw/main/KSP-1.12.5.zip
       version-string: ${{ inputs.version-string }}
+      changelog-output-file: GameData/TUFX/TUFXChangelog.cfg
     secrets:
       ksp-zip-password: ${{ secrets.KSP_ZIP_PASSWORD }}
