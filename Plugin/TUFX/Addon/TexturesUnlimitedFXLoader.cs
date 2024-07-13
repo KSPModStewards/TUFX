@@ -111,7 +111,7 @@ namespace TUFX
 #if DEBUG
                 ToolbarControl.RegisterMod(toolbarDebugName);
                 var debugToolbarControl = gameObject.AddComponent<ToolbarControl>();
-                debugToolbaControl.AddToAllToolbars(
+                debugToolbarControl.AddToAllToolbars(
                     debugGuiEnable,
                     debugGuiDisable,
                     ApplicationLauncher.AppScenes.ALWAYS,
