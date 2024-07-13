@@ -31,26 +31,11 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <!--Import targets now, which will import KSPCommunityFixes.csproj.user where the path to the KSP install root must be defined in ReferencePath-->
-  <!--This must be done after the main project poperties are defined because it needs the target framework property to be defined -->
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!--Parse KSP platform-specific paths and set the start action-->
   <PropertyGroup>
-    <KSPExecutable Condition="$([MSBuild]::IsOsPlatform('Windows'))">KSP_x64.exe</KSPExecutable>
-    <KSPExecutable Condition="$([MSBuild]::IsOsPlatform('OSX'))">KSP.app</KSPExecutable>
-    <KSPExecutable Condition="$([MSBuild]::IsOsPlatform('Linux'))">KSP.x86_64</KSPExecutable>
-    <ManagedRelativePath Condition="$([MSBuild]::IsOsPlatform('Windows'))">KSP_x64_Data\Managed</ManagedRelativePath>
-    <ManagedRelativePath Condition="$([MSBuild]::IsOsPlatform('OSX'))">KSP.app\Contents\Resources\Data\Managed</ManagedRelativePath>
-    <ManagedRelativePath Condition="$([MSBuild]::IsOsPlatform('Linux'))">KSP_Data\Managed</ManagedRelativePath>
-    <ManagedPath>$(ReferencePath)\$(ManagedRelativePath)</ManagedPath>
-    <StartAction>Program</StartAction>
-    <StartProgram>$(ReferencePath)\$(KSPExecutable)</StartProgram>
-    <StartWorkingDirectory>$(ReferencePath)</StartWorkingDirectory>
+    <BinariesOutputRelativePath>GameData\TUFX\Plugins</BinariesOutputRelativePath>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)KSPBuildTools\KSPCommon.props" />
   <ItemGroup>
-    <Reference Include="$(ManagedPath)\Assembly-CSharp.dll">
-      <Private>false</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -59,28 +44,10 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="$(ManagedPath)\UnityEngine.AnimationModule.dll">
+    <Reference Include="$(KSPRoot)\GameData\000_ClickThroughBlocker\Plugins\ClickThroughBlocker.dll">
       <Private>false</Private>
     </Reference>
-    <Reference Include="$(ManagedPath)\UnityEngine.AssetBundleModule.dll">
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="$(ManagedPath)\UnityEngine.CoreModule.dll">
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="$(ManagedPath)\UnityEngine.IMGUIModule.dll">
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="$(ManagedPath)\UnityEngine.PhysicsModule.dll">
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="$(ManagedPath)\UnityEngine.VRModule.dll">
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="$(ReferencePath)\GameData\000_ClickThroughBlocker\Plugins\ClickThroughBlocker.dll">
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="$(ReferencePath)\GameData\001_ToolbarControl\Plugins\ToolbarControl.dll">
+    <Reference Include="$(KSPRoot)\GameData\001_ToolbarControl\Plugins\ToolbarControl.dll">
       <Private>false</Private>
     </Reference>
   </ItemGroup>
@@ -163,11 +130,5 @@
   <ItemGroup>
     <None Include="PostProcessing\Unity.Postprocessing.Runtime.asmdef" />
   </ItemGroup>
-  <ItemGroup />
-  <PropertyGroup>
-    <PostBuildEvent>
-			copy "$(TargetPath)" "$(SolutionDir)\..\GameData\TUFX\Plugins\$(TargetFileName)"
-			copy "$(TargetDir)\$(SolutionName).pdb"  "$(SolutionDir)\..\GameData\TUFX\Plugins\$(SolutionName).pdb"
-		</PostBuildEvent>
-  </PropertyGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
