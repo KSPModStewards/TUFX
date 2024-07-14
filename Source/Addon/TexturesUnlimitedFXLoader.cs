@@ -329,7 +329,7 @@ namespace TUFX
                             }
                             else
                             {
-                                Log.exception("Texture specified by path: " + texName + " was not found when attempting to load textures for effect: " + effectName + " propertyName: " + propName);
+                                Log.error("Texture specified by path: " + texName + " was not found when attempting to load textures for effect: " + effectName + " propertyName: " + propName);
                             }
                         }
                     }
@@ -353,7 +353,7 @@ namespace TUFX
                 }
                 else
                 {
-                    Log.exception("TUFX Profiles already contains profile for name: " + profile.ProfileName + ".  This is the result of a configuration with" +
+                    Log.error("TUFX Profiles already contains profile for name: " + profile.ProfileName + ".  This is the result of a configuration with" +
                         " a duplicate name; please check your configurations and remove any duplicates.  Only the first configuration parsed for any one name will be loaded.");
                 }
             }
@@ -438,7 +438,7 @@ namespace TUFX
             switch (scene)
             {
                 case GameScenes.MAINMENU:
-                    Log.exception("The main menu profile must be set via config!");
+                    Log.error("The main menu profile must be set via config!");
                     break;
                 case GameScenes.SPACECENTER:
                     HighLogic.CurrentGame.Parameters.CustomParams<TUFXGameSettings>().SpaceCenterSceneProfile = profile;

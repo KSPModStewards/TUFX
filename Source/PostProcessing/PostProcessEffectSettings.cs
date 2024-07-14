@@ -133,7 +133,11 @@ namespace UnityEngine.Rendering.PostProcessing
 
         internal void loadIntParameter(ConfigNode node, string name, ParameterOverride<int> param)
         {
-            if (node.HasValue(name)) { param.Override(node.GetIntValue(name)); }
+            int value = 0;
+            if (node.TryGetValue(name, ref value))
+            {
+                param.Override(value);
+            }
         }
 
         internal void loadFloatParameter(ConfigNode node, string name, ParameterOverride<float> param)
@@ -177,7 +181,11 @@ namespace UnityEngine.Rendering.PostProcessing
 
         internal void loadColorParameter(ConfigNode node, string name, ParameterOverride<Color> param)
         {
-            if (node.HasValue(name)) { param.Override(node.getColor(name)); }
+            Color color = default(Color);
+            if (node.TryGetValue(name, ref color))
+            {
+                param.Override(color);
+            }
         }
 
         internal void loadVector2Parameter(ConfigNode node, string name, ParameterOverride<Vector2> param)
