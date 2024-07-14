@@ -284,10 +284,9 @@ namespace TUFX
 
         private void renderGeneralSettings()
         {
-            bool enabled = true;
-            bool showProps = DrawGroupHeader("General Settings", ref enabled);
+			GUILayout.BeginVertical(HighLogic.Skin.box);
 
-            if (showProps)
+            if (DrawGroupHeader("General Settings"))
             {
                 renderHDRSettings();
                 renderAntialiasingSettings();
@@ -329,8 +328,8 @@ namespace TUFX
 
         private void renderAmbientOcclusionSettings()
         {
-            bool showProps = AddEffectHeader("Ambient Occlusion", out AmbientOcclusion ao);
-            if (showProps)
+			GUILayout.BeginVertical(HighLogic.Skin.box);
+            if (AddEffectHeader("Ambient Occlusion", out AmbientOcclusion ao))
             {
                 AddEnumParameter("Mode", ao.mode);
                 AddFloatParameter("Intensity", ao.intensity, 0, 10);
@@ -349,8 +348,8 @@ namespace TUFX
 
         private void renderAutoExposureSettings()
         {
-            bool showProps = AddEffectHeader("Auto Exposure", out AutoExposure ae);
-            if (showProps)
+			GUILayout.BeginVertical(HighLogic.Skin.box);
+            if (AddEffectHeader("Auto Exposure", out AutoExposure ae))
             {
                 AddVector2Parameter("Filtering", ae.filtering);
                 AddFloatParameter("Min Luminance", ae.minLuminance, -9, 9);
@@ -365,8 +364,8 @@ namespace TUFX
 
         private void renderBloomSettings()
         {
-            bool showProps = AddEffectHeader("Bloom", out Bloom bl);
-            if (showProps)
+			GUILayout.BeginVertical(HighLogic.Skin.box);
+            if (AddEffectHeader("Bloom", out Bloom bl))
             {
                 AddFloatParameter("Intensity", bl.intensity, 0, 10);
                 AddFloatParameter("Threshold", bl.threshold, 0, 2);
@@ -384,8 +383,8 @@ namespace TUFX
 
         private void renderChromaticAberrationSettings()
         {
-            bool showProps = AddEffectHeader("Chromatic Aberration", out ChromaticAberration ca);
-            if (showProps)
+			GUILayout.BeginVertical(HighLogic.Skin.box);
+            if (AddEffectHeader("Chromatic Aberration", out ChromaticAberration ca))
             {
                 AddTextureParameter("Spectral LUT", ca.spectralLut, BuiltinEffect.ChromaticAberration.ToString(), "SpectralLut");
                 AddFloatParameter("Intensity", ca.intensity, 0, 1);
@@ -396,8 +395,8 @@ namespace TUFX
 
         private void renderColorGradingSettings()
         {
-            bool showProps = AddEffectHeader("Color Grading", out ColorGrading cg);
-            if (showProps)
+			GUILayout.BeginVertical(HighLogic.Skin.box);
+            if (AddEffectHeader("Color Grading", out ColorGrading cg))
             {
                 AddEnumParameter("Mode", cg.gradingMode);
                 if (cg.gradingMode == GradingMode.External)
@@ -463,8 +462,8 @@ namespace TUFX
 
         private void renderDepthOfFieldSettings()
         {
-            bool showProps = AddEffectHeader("Depth Of Field", out DepthOfField df);
-            if (showProps)
+			GUILayout.BeginVertical(HighLogic.Skin.box);
+            if (AddEffectHeader("Depth Of Field", out DepthOfField df))
             {
                 AddFloatParameter("Focus Distance", df.focusDistance, 0.1f, 64000);
                 AddFloatParameter("Aperture", df.aperture, 0.05f, 32f);
@@ -477,8 +476,8 @@ namespace TUFX
 
         private void renderGrainSettings()
         {
-            bool showProps = AddEffectHeader("Grain", out Grain gr);
-            if (showProps)
+			GUILayout.BeginVertical(HighLogic.Skin.box);
+            if (AddEffectHeader("Grain", out Grain gr))
             {
                 AddBoolParameter("Colored", gr.colored);
                 AddFloatParameter("Intensity", gr.intensity, 0, 1);
@@ -490,8 +489,8 @@ namespace TUFX
 
         private void renderLensDistortionSettings()
         {
-            bool showProps = AddEffectHeader("Lens Distortion", out LensDistortion ld);
-            if (showProps)
+			GUILayout.BeginVertical(HighLogic.Skin.box);
+            if (AddEffectHeader("Lens Distortion", out LensDistortion ld))
             {
                 AddFloatParameter("Intensity", ld.intensity, -100, 100);
                 AddFloatParameter("IntensityX", ld.intensityX, 0, 1);
@@ -505,8 +504,8 @@ namespace TUFX
 
         private void renderMotionBlurSettings()
         {
-            bool showProps = AddEffectHeader("Motion Blur", out MotionBlur mb);
-            if (showProps)
+			GUILayout.BeginVertical(HighLogic.Skin.box);
+            if (AddEffectHeader("Motion Blur", out MotionBlur mb))
             {
                 AddFloatParameter("Shutter Angle", mb.shutterAngle, 0f, 360f);
                 AddIntParameter("Sample Count", mb.sampleCount, 4, 32);
@@ -516,13 +515,8 @@ namespace TUFX
 
         private void renderScatteringSettings()
         {
-            //Log.debug("SC start");
-            bool showProps = AddEffectHeader("Scattering", out TUBISEffect sc);
-            //if (enabled != sc.enabled)
-            //{
-            //    //TODO
-            //}
-            if (showProps)
+			GUILayout.BeginVertical(HighLogic.Skin.box);
+            if (AddEffectHeader("Scattering", out TUBISEffect sc))
             {
                 AddFloatParameter("Exposure", sc.Exposure, 0f, 50f);
             }
@@ -532,8 +526,8 @@ namespace TUFX
 
         private void renderVignetteSettings()
         {
-            bool showProps = AddEffectHeader("Vignette", out Vignette vg);
-            if (showProps)
+			GUILayout.BeginVertical(HighLogic.Skin.box);
+            if (AddEffectHeader("Vignette", out Vignette vg))
             {
                 AddEnumParameter("Mode", vg.mode);
                 AddColorParameter("Color", vg.color);
@@ -552,10 +546,9 @@ namespace TUFX
 
         #region REGION - Parameter Rendering Methods
 
-        private bool DrawGroupHeader(string label, ref bool enabled)
+        private bool DrawGroupHeaderInternal(string label, Action DrawLabel)
         {
 			GUILayout.BeginVertical(HighLogic.Skin.box);
-            GUILayout.BeginVertical(HighLogic.Skin.box);
             GUILayout.BeginHorizontal();
 
 			if (!effectBoolStorage.TryGetValue(label, out bool showProps))
@@ -569,11 +562,31 @@ namespace TUFX
 				effectBoolStorage[label] = showProps;
 			}
 
-			enabled = GUILayout.Toggle(enabled, label);
+            DrawLabel();
 
 			GUILayout.EndHorizontal();
             GUILayout.EndVertical();
-            return showProps && enabled;
+			return showProps;
+		}
+
+        private bool DrawGroupHeader(string label)
+        {
+            return DrawGroupHeaderInternal(label, () =>
+            {
+                GUILayout.Label(label);
+            });
+        }
+
+        private bool DrawGroupHeader(string label, ref bool enabled)
+        {
+            bool overrideEnabled = enabled;
+            bool showProps = DrawGroupHeaderInternal(label, () =>
+            {
+                overrideEnabled = GUILayout.Toggle(overrideEnabled, label);
+            });
+
+            enabled = overrideEnabled;
+            return showProps && overrideEnabled;
         }
 
 		private bool AddEffectHeader<T>(string label, out T effect) where T : PostProcessEffectSettings
@@ -633,7 +646,7 @@ namespace TUFX
             GUILayout.EndHorizontal();
         }
 
-        private bool AddEnumField<Tenum>(string label, ref Tenum param)
+        private bool AddEnumField<Tenum>(string label, ref Tenum param) where Tenum : Enum
         {
             Tenum value = param;
             Type type = value.GetType();
