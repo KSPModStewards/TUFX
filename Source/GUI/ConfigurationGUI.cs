@@ -65,7 +65,7 @@ namespace TUFX
         {
             try
             {
-                windowRect = ClickThruBlocker.GUIWindow(windowID, windowRect, updateWindow, "TUFXSettings");
+                windowRect = ClickThruBlocker.GUIWindow(windowID, windowRect, updateWindow, "TUFXSettings", HighLogic.Skin.window);
             }
             catch (Exception e)
             {
