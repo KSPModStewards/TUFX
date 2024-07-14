@@ -3,3 +3,4 @@ bin/
 obj/
 GameData/TUFX/Plugins/
 *.user
+packages/
