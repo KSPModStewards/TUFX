@@ -289,7 +289,7 @@ namespace TUFX
 			if (DrawGroupHeader("General Settings"))
 			{
 				bool hdrChanged = renderHDRSettings(profile);
-				bool primaryChanged = renderAntialiasingSettings("Primary Camera Antialiasing", ref profile.AntiAliasing);
+				bool primaryChanged = renderAntialiasingSettings("Primary Camera Antialiasing", ref profile.Antialiasing);
 				bool secondaryChanged = renderAntialiasingSettings("Secondary Camera Antialiasing", ref profile.SecondaryCameraAntialiasing);
 
 				if (hdrChanged || primaryChanged || secondaryChanged)
@@ -318,7 +318,7 @@ namespace TUFX
 			return changed;
 		}
 
-		private bool renderAntialiasingSettings(string label, ref AntiAliasingParameters parameters)
+		private bool renderAntialiasingSettings(string label, ref AntialiasingParameters parameters)
 		{
 			GUILayout.BeginVertical(HighLogic.Skin.box);
 			bool needRefresh = false;

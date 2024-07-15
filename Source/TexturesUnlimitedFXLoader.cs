@@ -538,7 +538,7 @@ namespace TUFX
 			// motion vectors aren't shared between cameras, and applying TAA on multiple cameras will produce smearing
 			layer.volumeLayer = isFinalCamera ? 1 : 0;
 
-			AntiAliasingParameters aaParameters = isPrimaryCamera ? tufxProfile.AntiAliasing : tufxProfile.SecondaryCameraAntialiasing;
+			AntialiasingParameters aaParameters = isPrimaryCamera ? tufxProfile.Antialiasing : tufxProfile.SecondaryCameraAntialiasing;
 
 			layer.antialiasingMode = aaParameters.Mode;
 			layer.temporalAntialiasing = aaParameters.TemporalAntialiasing;
