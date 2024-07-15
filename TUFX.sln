@@ -9,10 +9,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		CHANGELOG.md = CHANGELOG.md
 		readme.md = readme.md
-		GameData\TUFX\TexturesUnlimitedFX.version.versiontemplate = GameData\TUFX\TexturesUnlimitedFX.version.versiontemplate
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TUFX", "Source\TUFX.csproj", "{02EFB286-38A9-47C4-83CD-6DD59077AA2F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GameData", "GameData", "{906E3FB5-BC80-42AF-B920-59CAD89B00C4}"
+	ProjectSection(SolutionItems) = preProject
+		GameData\TUFX\Profiles\TUFX-Default.cfg = GameData\TUFX\Profiles\TUFX-Default.cfg
+		GameData\TUFX\TUFX.cfg = GameData\TUFX\TUFX.cfg
+		GameData\TUFX\TUFX.version = GameData\TUFX\TUFX.version
+		GameData\TUFX\TUFX.version.versiontemplate = GameData\TUFX\TUFX.version.versiontemplate
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +34,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{906E3FB5-BC80-42AF-B920-59CAD89B00C4} = {9956C157-67C8-4F77-A278-AF7732518796}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CFB090D5-6C7B-4196-A67F-1A4A89B48CDD}

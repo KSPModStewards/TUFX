@@ -129,6 +129,9 @@
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
     <None Include="packages.config" />
     <None Include="PostProcessing\.editorconfig" />
     <None Include="PostProcessing\Unity.Postprocessing.Runtime.asmdef" />
