@@ -537,7 +537,13 @@ namespace TUFX
 			// But we don't want to apply TAA (and possibly motion blur and DoF) to anything but the local space camera since 
 			// motion vectors aren't shared between cameras, and applying TAA on multiple cameras will produce smearing
 			layer.volumeLayer = isFinalCamera ? 1 : 0;
-            layer.antialiasingMode = isPrimaryCamera ? tufxProfile.AntiAliasing : tufxProfile.SecondaryCameraAntialiasing;
+
+            AntiAliasingParameters aaParameters = isPrimaryCamera ? tufxProfile.AntiAliasing : tufxProfile.SecondaryCameraAntialiasing;
+
+            layer.antialiasingMode = aaParameters.Mode;
+            layer.temporalAntialiasing = aaParameters.TemporalAntialiasing;
+            layer.subpixelMorphologicalAntialiasing = aaParameters.SubpixelMorphologicalAntialiasing;
+            layer.fastApproximateAntialiasing = aaParameters.FastApproximateAntialiasing;
 		}
 
         private void ApplyCurrentProfile()

@@ -220,7 +220,7 @@ namespace TUFX
                 return;
             }
             editScrollPos = GUILayout.BeginScrollView(editScrollPos, false, true, (GUILayoutOption[])null);
-            renderGeneralSettings();
+            renderGeneralSettings(TexturesUnlimitedFXLoader.INSTANCE.CurrentProfile);
             renderAmbientOcclusionSettings();
             renderAutoExposureSettings();
             renderBloomSettings();
@@ -282,48 +282,79 @@ namespace TUFX
 
         #region REGION Effect Settings Rendering
 
-        private void renderGeneralSettings()
+        private void renderGeneralSettings(TUFXProfile profile)
         {
 			GUILayout.BeginVertical(HighLogic.Skin.box);
 
             if (DrawGroupHeader("General Settings"))
             {
-                renderHDRSettings();
-                renderAntialiasingSettings();
-            }
+                bool hdrChanged = renderHDRSettings(profile);
+                bool primaryChanged = renderAntialiasingSettings("Primary Camera Antialiasing", ref profile.AntiAliasing);
+				bool secondaryChanged = renderAntialiasingSettings("Secondary Camera Antialiasing", ref profile.SecondaryCameraAntialiasing);
+
+				if (hdrChanged || primaryChanged || secondaryChanged)
+				{
+					TexturesUnlimitedFXLoader.INSTANCE.RefreshCameras();
+				}
+			}
             GUILayout.EndVertical();
         }
 
-        private void renderHDRSettings()
+        private bool renderHDRSettings(TUFXProfile profile)
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label("HDR", GUILayout.Width(200));
-            bool enabled = TexturesUnlimitedFXLoader.INSTANCE.CurrentProfile.HDREnabled;
+            bool enabled = profile.HDREnabled;
             string buttonText = enabled ? "Disable" : "Enable";
+            bool changed = false;
 			if (GUILayout.Button(buttonText, GUILayout.Width(100)))
 			{
-                TexturesUnlimitedFXLoader.INSTANCE.CurrentProfile.HDREnabled = !enabled;
-				TexturesUnlimitedFXLoader.INSTANCE.RefreshCameras();
+                profile.HDREnabled = !enabled;
+                changed = true;
+				
 			}
 
 			GUILayout.EndHorizontal();
+            return changed;
         }
 
-        private void renderAntialiasingSettings()
+        private bool renderAntialiasingSettings(string label, ref AntiAliasingParameters parameters)
         {
-            bool primaryChanged = AddEnumField("Primary Camera Antialiasing", ref TexturesUnlimitedFXLoader.INSTANCE.CurrentProfile.AntiAliasing);
-            bool secondaryChanged = AddEnumField("Secondary Camera Antialiasing", ref TexturesUnlimitedFXLoader.INSTANCE.CurrentProfile.SecondaryCameraAntialiasing);
+			GUILayout.BeginVertical(HighLogic.Skin.box);
+            bool needRefresh = false;
 
-			if (primaryChanged || secondaryChanged)
+            if (DrawGroupHeader(label))
             {
-                TexturesUnlimitedFXLoader.INSTANCE.RefreshCameras();
+                try
+                {
+                    needRefresh = AddEnumField("Mode", ref parameters.Mode);
+
+                    switch (parameters.Mode)
+                    {
+                        case PostProcessLayer.Antialiasing.SubpixelMorphologicalAntialiasing:
+                            AddEnumField("Quality", ref parameters.SubpixelMorphologicalAntialiasing.quality);
+                            break;
+                        case PostProcessLayer.Antialiasing.FastApproximateAntialiasing:
+                            AddBoolField("Fast Mode", ref parameters.FastApproximateAntialiasing.fastMode);
+                            AddBoolField("Keep Alpha", ref parameters.FastApproximateAntialiasing.keepAlpha);
+                            break;
+                        case PostProcessLayer.Antialiasing.TemporalAntialiasing:
+                            AddFloatField("Jitter Spread", ref parameters.TemporalAntialiasing.jitterSpread, 0, 1);
+                            AddFloatField("Sharpness", ref parameters.TemporalAntialiasing.sharpness, 0, 3);
+                            AddFloatField("Stationary Blending", ref parameters.TemporalAntialiasing.stationaryBlending, 0, 0.99f);
+                            AddFloatField("Motion Blending", ref parameters.TemporalAntialiasing.motionBlending, 0, 0.99f);
+                            break;
+                    }
+                }
+                catch(Exception ex)
+                {
+                    Debug.LogException(ex);
+                }
             }
-            //TODO -- add parameters for the AA modes
-            //if (mode == PostProcessLayer.Antialiasing.FastApproximateAntialiasing)
-            //{
-            //    //AddBoolField("FXAA Fast Mode", ref layer.fastApproximageAntialiasing.fastMode);
-            //    //AddBoolField("FXAA Keep Alpha", ref layer.fastApproximageAntialiasing.keepAlpha);
-            //}
+
+            GUILayout.EndVertical();
+
+            return needRefresh;
         }
 
         private void renderAmbientOcclusionSettings()
@@ -521,7 +552,6 @@ namespace TUFX
                 AddFloatParameter("Exposure", sc.Exposure, 0f, 50f);
             }
             GUILayout.EndVertical();
-            //Log.debug("SC end");
         }
 
         private void renderVignetteSettings()
@@ -549,23 +579,23 @@ namespace TUFX
         private bool DrawGroupHeaderInternal(string label, Action DrawLabel)
         {
 			GUILayout.BeginVertical(HighLogic.Skin.box);
-            GUILayout.BeginHorizontal();
+			GUILayout.BeginHorizontal();
 
 			if (!effectBoolStorage.TryGetValue(label, out bool showProps))
-            {
-                effectBoolStorage.Add(label, showProps = true);
-            }
+			{
+				effectBoolStorage.Add(label, showProps = true);
+			}
 
-            if (GUILayout.Button(showProps ? "v" : ">", GUILayout.Width(20)))
-            {
-                showProps = !showProps;
+			if (GUILayout.Button(showProps ? "v" : ">", GUILayout.Width(20)))
+			{
+				showProps = !showProps;
 				effectBoolStorage[label] = showProps;
 			}
 
             DrawLabel();
 
 			GUILayout.EndHorizontal();
-            GUILayout.EndVertical();
+			GUILayout.EndVertical();
 			return showProps;
 		}
 
@@ -674,6 +704,18 @@ namespace TUFX
             return changed;
         }
 
+        private void AddBoolField(string label, ref bool value)
+        {
+			GUILayout.BeginHorizontal();
+			GUILayout.Label(label, GUILayout.Width(200), GUILayout.Height(22));
+
+			if (GUILayout.Button(value.ToString(), GUILayout.Width(110)))
+			{
+                value = !value;
+			}
+			GUILayout.EndHorizontal();
+		}
+
         private void AddBoolParameter(string label, ParameterOverride<bool> param)
         {
             GUILayout.BeginHorizontal();
@@ -730,6 +772,23 @@ namespace TUFX
             }
             GUILayout.EndHorizontal();
         }
+
+        private void AddFloatField(string label, ref float value, float min, float max)
+        {
+			GUILayout.BeginHorizontal();
+			GUILayout.Label(label, GUILayout.Width(200), GUILayout.Height(22));
+
+            string oldValue = value.ToString();
+			string newValue = GUILayout.TextArea(oldValue, GUILayout.Width(110));
+            if (newValue != oldValue)
+            {
+                float.TryParse(newValue, out value);
+            }
+
+			value = GUILayout.HorizontalSlider(value, min, max, GUILayout.Width(330));
+			
+            GUILayout.EndHorizontal();
+		}
 
         private void AddFloatParameter(string label, ParameterOverride<float> param, float min, float max)
         {

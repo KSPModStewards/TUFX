@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -80,6 +82,125 @@ namespace TUFX
                 return defaultValue;
             }
         }
+
+        private static void WriteField(ConfigNode node, string fieldName, object fieldValue)
+        {
+            if (fieldValue == null) return;
+
+            Type fieldType = fieldValue.GetType();
+
+            if (fieldValue is IList list)
+            {
+                // TODO: handle this
+            }
+			// this should handle primitive types and strings
+			else if (ConfigNode.WriteValue(fieldName, fieldValue.GetType(), fieldValue, node))
+			{
+				// cool
+			}
+			else
+			{
+				// This should be a struct or class
+                WriteObject(node, fieldName, fieldValue);
+			}
+		}
+
+        readonly static Type[] k_emptyTypeArray = new Type[0];
+        readonly static object[] k_emptyObjectArray = new object[0];
+
+        private static object ReadField(ConfigNode node, Type fieldType, string fieldName)
+        {
+			var cfgValue = node.GetValue(fieldName);
+
+			if (typeof(IList).IsAssignableFrom(fieldType))
+            {
+                // TODO: handle this
+            }
+            else if (cfgValue != null)
+            {
+				// this should handle primitive types and strings
+				object fieldValue = ConfigNode.ReadValue(fieldType, cfgValue);
+                if (fieldValue != null)
+                {
+                    return fieldValue;
+                }
+			}
+            else
+            {
+                var objNode = node.GetNode(fieldName);
+
+                if (objNode != null)
+                {
+                    // this should be a struct or class
+                    ConstructorInfo constructor = fieldType.GetConstructor(k_emptyTypeArray);
+                    object obj = constructor.Invoke(k_emptyObjectArray);
+                    ReadObject(node, fieldName, ref obj);
+                    return obj;
+                }
+            }
+
+            // TODO: this will be returning null for value types, when really we want the default value for that type...how does that work?
+            return default;
+		}
+
+        public static void WriteObject(this ConfigNode node, string name, object obj)
+        {
+            ConfigNode objNode = node.AddNode(name);
+            FieldInfo[] fields = obj.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
+            PropertyInfo[] properties = obj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
+
+            foreach (FieldInfo field in fields)
+            {
+                WriteField(objNode, field.Name, field.GetValue(obj));
+            }
+
+            foreach (PropertyInfo property in properties)
+            {
+                var setMethod = property.GetSetMethod();
+
+				if (setMethod != null && setMethod.IsPublic)
+                {
+                    WriteField(objNode, property.Name, property.GetValue(obj));
+                }
+            }
+        }
+
+        public static void ReadObject<T>(this ConfigNode node, string name, ref T obj)
+        {
+            ConfigNode objNode = node.GetNode(name);
+            if (objNode == null) return;
+
+            var type = obj.GetType();
+            
+            // If obj is a value type, then calling field.SetValue is going to operate on a boxed copy and won't affect the original
+            // so therefore we need to box a copy and then copy it back to the ref param.
+            // If obj is a reference type, this isn't even a copy so it's no big deal.
+            object objCopy = obj;
+
+			FieldInfo[] fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
+			PropertyInfo[] properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
+
+            foreach (FieldInfo field in fields)
+            {
+                object fieldValue = ReadField(objNode, field.FieldType, field.Name);
+
+                field.SetValue(objCopy, fieldValue);
+            }
+
+            foreach (PropertyInfo property in properties)
+            {
+				var setMethod = property.GetSetMethod();
+
+				if (setMethod != null && setMethod.IsPublic)
+				{
+					object fieldValue = ReadField(objNode, property.PropertyType, property.Name);
+                    property.SetValue(objCopy, fieldValue);
+				}
+            }
+
+			obj = (T)objCopy;
+		}
+
         #endregion
 
         public static float[] safeParseFloatArray(string val)

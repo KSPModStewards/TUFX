@@ -82,28 +82,32 @@ namespace TUFX
 
     }
 
-    /// <summary>
-    /// Storage of data for a single
-    /// </summary>
+    public struct AntiAliasingParameters
+    {
+        public void Init()
+        {
+            Mode = PostProcessLayer.Antialiasing.None;
+            TemporalAntialiasing = new TemporalAntialiasing();
+            SubpixelMorphologicalAntialiasing = new SubpixelMorphologicalAntialiasing();
+            FastApproximateAntialiasing = new FastApproximateAntialiasing();
+        }
+
+        public PostProcessLayer.Antialiasing Mode;
+        public TemporalAntialiasing TemporalAntialiasing;
+		public SubpixelMorphologicalAntialiasing SubpixelMorphologicalAntialiasing;
+		public FastApproximateAntialiasing FastApproximateAntialiasing;
+	}
+
     public class TUFXProfile
     {
 
-        /// <summary>
-        /// Name of the profile
-        /// </summary>
         public string ProfileName { get; private set; }
 
-        /// <summary>
-        /// Configured value on if HDR is enabled for this profile or not.
-        /// </summary>
-        public bool HDREnabled { get; set; }
+        public bool HDREnabled;
 
-        /// <summary>
-        /// Configured AntiAliasing setting for the profile.
-        /// </summary>
-        public PostProcessLayer.Antialiasing AntiAliasing;
+        public AntiAliasingParameters AntiAliasing;
 
-        public PostProcessLayer.Antialiasing SecondaryCameraAntialiasing;
+        public AntiAliasingParameters SecondaryCameraAntialiasing;
 
         private UrlDir.UrlConfig urlConfig;
 
@@ -129,8 +133,10 @@ namespace TUFX
 			ConfigNode node = new ConfigNode("TUFX_PROFILE");
 			node.SetValue("name", ProfileName, true);
             node.SetValue("hdr", HDREnabled, true);
-            node.SetValue("antialiasing", AntiAliasing.ToString(), true);
-            node.SetValue("secondaryAntialiasing", SecondaryCameraAntialiasing.ToString(), true);
+
+            node.WriteObject(nameof(AntiAliasing), AntiAliasing);
+            node.WriteObject(nameof(SecondaryCameraAntialiasing), SecondaryCameraAntialiasing);
+
             int len = Settings.Count;
             for (int i = 0; i < len; i++)
             {
@@ -175,8 +181,16 @@ namespace TUFX
         {
             ProfileName = node.GetStringValue("name");
             HDREnabled = node.GetBoolValue("hdr", false);
-            AntiAliasing = node.GetEnumValue("antialiasing", PostProcessLayer.Antialiasing.None);
-            SecondaryCameraAntialiasing = node.GetEnumValue("secondaryAntialiasing", PostProcessLayer.Antialiasing.None);
+
+			AntiAliasing.Init();
+			SecondaryCameraAntialiasing.Init();
+
+            // support loading legacy profiles
+            AntiAliasing.Mode = node.GetEnumValue("antialiasing", PostProcessLayer.Antialiasing.None);
+
+			node.ReadObject(nameof(AntiAliasing), ref AntiAliasing);
+            node.ReadObject(nameof(SecondaryCameraAntialiasing), ref SecondaryCameraAntialiasing);
+
             Settings.Clear();
             ConfigNode[] effectNodes = node.GetNodes("EFFECT");
             int len = effectNodes.Length;
