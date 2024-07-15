@@ -38,6 +38,8 @@ namespace TUFX
 
 		public class Configuration
 		{
+			public const string NODE_NAME = "TUFX_CONFIGURATION";
+
 			[Persistent] public string MainMenuProfile = "Default-MainMenu";
 			[Persistent] public string SpaceCenterSceneProfile = "Default-KSC";
 			[Persistent] public string EditorSceneProfile = "Default-Editor";
@@ -48,6 +50,7 @@ namespace TUFX
 			[Persistent] public bool ShowToolbarButton = true;
 		}
 
+		internal static UrlDir.UrlConfig defaultConfigUrl = null;
 		internal static readonly Configuration defaultConfiguration = new Configuration();
 
 		private PostProcessVolume mainVolume;
@@ -357,10 +360,10 @@ namespace TUFX
 						" a duplicate name; please check your configurations and remove any duplicates.  Only the first configuration parsed for any one name will be loaded.");
 				}
 			}
-			ConfigNode config = GameDatabase.Instance.GetConfigNodes("TUFX_CONFIGURATION").FirstOrDefault(m => m.GetValue("name") == "Default");
-			if (config != null)
+			defaultConfigUrl = GameDatabase.Instance.GetConfigs(Configuration.NODE_NAME).FirstOrDefault();
+			if (defaultConfigUrl != null)
 			{
-				ConfigNode.LoadObjectFromConfig(defaultConfiguration, config);
+				ConfigNode.LoadObjectFromConfig(defaultConfiguration, defaultConfigUrl.config);
 			}
 		}
 
@@ -438,7 +441,13 @@ namespace TUFX
 			switch (scene)
 			{
 				case GameScenes.MAINMENU:
-					Log.error("The main menu profile must be set via config!");
+					defaultConfiguration.MainMenuProfile = profile;
+					if (defaultConfigUrl != null)
+					{
+						defaultConfigUrl.config = new ConfigNode(Configuration.NODE_NAME);
+						ConfigNode.WriteObject(defaultConfiguration, defaultConfigUrl.config, 0);
+						defaultConfigUrl.parent.SaveConfigs();
+					}
 					break;
 				case GameScenes.SPACECENTER:
 					HighLogic.CurrentGame.Parameters.CustomParams<TUFXGameSettings>().SpaceCenterSceneProfile = profile;
