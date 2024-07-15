@@ -1,0 +1,7 @@
+# This directory primarily comes from https://github.com/Unity-Technologies/PostProcessing/tree/v2/PostProcessing/Runtime
+# Unity uses spaces instead of tabs, so let's try to adhere to their standard in the interest of not generating false changes
+
+[*.cs]
+indent_style = spaces
+tab_width = 4
+indent_size = 4

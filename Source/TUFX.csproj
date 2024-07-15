@@ -52,7 +52,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Addon\TexturesUnlimitedFXLoader.cs" />
+    <Compile Include="TexturesUnlimitedFXLoader.cs" />
     <Compile Include="GUI\ConfigurationGUI.cs" />
     <Compile Include="GUI\DebugGUI.cs" />
     <Compile Include="GUI\SplineConfigurationGUI.cs" />
@@ -122,17 +122,19 @@
     <Compile Include="Scattering\TUBISEffect.cs" />
     <Compile Include="Scattering\TUFXScatteringManager.cs" />
     <Compile Include="Scattering\TUFXScatteringResources.cs" />
-    <Compile Include="Settings\TUFXGameSettings.cs" />
+    <Compile Include="TUFXGameSettings.cs" />
     <Compile Include="TUFXProfile.cs" />
     <Compile Include="TUFXEffectTextureList.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="PostProcessing\.editorconfig" />
     <None Include="PostProcessing\Unity.Postprocessing.Runtime.asmdef" />
+    <None Include="Properties\AssemblyInfo.cs.versiontemplate" />
   </ItemGroup>
   <ItemGroup>
-    <Publicize Include="Assembly-CSharp"/>
+    <Publicize Include="Assembly-CSharp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
