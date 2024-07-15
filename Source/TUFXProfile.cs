@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 
@@ -84,18 +81,21 @@ namespace TUFX
 
 	public struct AntialiasingParameters
 	{
-		public void Init()
-		{
-			Mode = PostProcessLayer.Antialiasing.None;
-			TemporalAntialiasing = new TemporalAntialiasing();
-			SubpixelMorphologicalAntialiasing = new SubpixelMorphologicalAntialiasing();
-			FastApproximateAntialiasing = new FastApproximateAntialiasing();
-		}
-
 		public PostProcessLayer.Antialiasing Mode;
 		public TemporalAntialiasing TemporalAntialiasing;
 		public SubpixelMorphologicalAntialiasing SubpixelMorphologicalAntialiasing;
 		public FastApproximateAntialiasing FastApproximateAntialiasing;
+
+		public void Load(ConfigNode parentNode, string nodeName, PostProcessLayer.Antialiasing legacyAntialiasingMode = PostProcessLayer.Antialiasing.None)
+		{
+			Mode = legacyAntialiasingMode;
+			parentNode.ReadObject(nodeName, ref this);
+
+			// if there weren't nodes for these, create defaults
+			if (TemporalAntialiasing == null) TemporalAntialiasing = new TemporalAntialiasing();
+			if (SubpixelMorphologicalAntialiasing == null) SubpixelMorphologicalAntialiasing = new SubpixelMorphologicalAntialiasing();
+			if (FastApproximateAntialiasing == null) FastApproximateAntialiasing = new FastApproximateAntialiasing();
+		}
 	}
 
 	public class TUFXProfile
@@ -182,14 +182,11 @@ namespace TUFX
 			ProfileName = node.GetStringValue("name");
 			HDREnabled = node.GetBoolValue("hdr", false);
 
-			Antialiasing.Init();
-			SecondaryCameraAntialiasing.Init();
-
 			// support loading legacy profiles
-			Antialiasing.Mode = node.GetEnumValue("antialiasing", PostProcessLayer.Antialiasing.None);
+			PostProcessLayer.Antialiasing legacyAntialiasing = node.GetEnumValue("antialiasing", PostProcessLayer.Antialiasing.None);
 
-			node.ReadObject(nameof(Antialiasing), ref Antialiasing);
-			node.ReadObject(nameof(SecondaryCameraAntialiasing), ref SecondaryCameraAntialiasing);
+			Antialiasing.Load(node, nameof(Antialiasing), legacyAntialiasing);
+			SecondaryCameraAntialiasing.Load(node, nameof(SecondaryCameraAntialiasing));
 
 			Settings.Clear();
 			ConfigNode[] effectNodes = node.GetNodes("EFFECT");
