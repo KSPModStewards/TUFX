@@ -567,7 +567,7 @@ namespace TUFX
 
 			mainVolume.sharedProfile = currentProfile.CreatePostProcessProfile();
 
-			if (HighLogic.LoadedScene == GameScenes.MAINMENU || HighLogic.LoadedScene == GameScenes.SPACECENTER)
+			if (HighLogic.LoadedScene == GameScenes.MAINMENU || HighLogic.LoadedScene == GameScenes.SPACECENTER || HighLogic.LoadedScene == GameScenes.EDITOR)
 			{
 				ApplyProfileToCamera(Camera.main, currentProfile, true, true);
 			}
@@ -576,7 +576,10 @@ namespace TUFX
 				var editorCameras = EditorCamera.Instance.cam.gameObject.GetComponentsInChildren<Camera>();
 				foreach (var cam in editorCameras)
 				{
-					ApplyProfileToCamera(cam, currentProfile, false, false);
+					if (!object.ReferenceEquals(cam, Camera.main))
+					{
+						ApplyProfileToCamera(cam, currentProfile, false, false);
+					}
 				}
 			}
 			bool scaledCameraIsPrimary = HighLogic.LoadedScene == GameScenes.TRACKSTATION || MapView.MapIsEnabled;
