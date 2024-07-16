@@ -59,6 +59,23 @@ namespace TUFX
 			windowID = GetInstanceID();
 			profileNames.Clear();
 			profileNames.AddRange(TexturesUnlimitedFXLoader.INSTANCE.Profiles.Keys);
+
+			gameObject.layer = 5;
+			gameObject.AddComponent<RectTransform>();
+
+			var canvasRenderer = gameObject.AddComponent<CanvasRenderer>();
+			canvasRenderer.cullTransparentMesh = true;
+			var image = gameObject.AddComponent<UnityEngine.UI.Image>();
+			image.color = new Color(0, 0, 0, 0);
+			image.raycastTarget = true;
+
+			gameObject.transform.SetParent(MainCanvasUtil.MainCanvas.transform, false);
+
+			// Ensure the RectTransform is anchored to the top-left of the screen
+			var rectTransform = transform as RectTransform;
+			rectTransform.anchorMin = new Vector2(0, 0);
+			rectTransform.anchorMax = new Vector2(0, 0);
+			rectTransform.pivot = new Vector2(0, 0);
 		}
 
 		public void OnGUI()
@@ -66,6 +83,11 @@ namespace TUFX
 			try
 			{
 				windowRect = ClickThruBlocker.GUIWindow(windowID, windowRect, updateWindow, "TUFXSettings", HighLogic.Skin.window);
+
+				var rectTransform = transform as RectTransform;
+				rectTransform.anchoredPosition = new Vector2(windowRect.x, Screen.height - windowRect.y - windowRect.height);
+				rectTransform.sizeDelta = new Vector2(windowRect.width, windowRect.height);
+				
 			}
 			catch (Exception e)
 			{

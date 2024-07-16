@@ -619,7 +619,7 @@ namespace TUFX
 		{
 			if (configGUI == null)
 			{
-				configGUI = this.gameObject.AddOrGetComponent<ConfigurationGUI>();
+				configGUI = new GameObject("TUFX Config GUI").AddComponent<ConfigurationGUI>();
 			}
 		}
 
@@ -630,7 +630,7 @@ namespace TUFX
 		{
 			if (configGUI != null)
 			{
-				GameObject.Destroy(configGUI);
+				GameObject.Destroy(configGUI.gameObject);
 				configGUI = null;
 			}
 		}
