@@ -45,7 +45,7 @@ namespace TUFX
 			[Persistent] public string EditorSceneProfile = "Default-Editor";
 			[Persistent] public string FlightSceneProfile = "Default-Flight";
 			[Persistent] public string MapSceneProfile = "Default-Tracking";
-			[Persistent] public string IVAProfile = "Default-Flight";
+			[Persistent] public string IVAProfile = "Default-Internal";
 			[Persistent] public string TrackingStationProfile = "Default-Tracking";
 			[Persistent] public bool ShowToolbarButton = true;
 		}
