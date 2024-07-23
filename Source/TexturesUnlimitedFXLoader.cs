@@ -497,13 +497,19 @@ namespace TUFX
 			}
 		}
 
+		private PostProcessLayer SetCameraHDR(Camera camera, bool hdr)
+		{
+			var layer = camera.gameObject.AddOrGetComponent<PostProcessLayer>();
+			layer.Init(Resources);
+			camera.allowHDR = hdr;
+			return layer;
+		}
+
 		private void ApplyProfileToCamera(Camera camera, TUFXProfile tufxProfile, bool isFinalCamera, bool isPrimaryCamera)
 		{
 			if (camera == null) return;
 
-			var layer = camera.gameObject.AddOrGetComponent<PostProcessLayer>();
-			layer.Init(Resources);
-			camera.allowHDR = tufxProfile.HDREnabled;
+			PostProcessLayer layer = SetCameraHDR(camera, tufxProfile.HDREnabled);
 
 			// In general all postprocessing should be done on the "final" camera - local when in flight, internal when in IVA, etc.
 			// But we don't want to apply TAA (and possibly motion blur and DoF) to anything but the local space camera since 
@@ -531,6 +537,12 @@ namespace TUFX
 			}
 
 			mainVolume.sharedProfile = currentProfile.CreatePostProcessProfile();
+
+			Camera galaxyCamera = ScaledCamera.Instance?.galaxyCamera;
+			if (galaxyCamera != null)
+			{
+				SetCameraHDR(galaxyCamera, profile.HDREnabled);
+			}
 
 			if (tufxScene == TUFXScene.Editor)
 			{
