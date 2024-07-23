@@ -115,8 +115,6 @@ namespace TUFX
 			MonoBehaviour.print("TUFXLoader - Start()");
 			INSTANCE = this;
 			DontDestroyOnLoad(this);
-			GameEvents.onLevelWasLoaded.Add(new EventData<GameScenes>.OnEvent(onLevelLoaded));
-			GameEvents.OnCameraChange.Add(new EventData<CameraManager.CameraMode>.OnEvent(cameraChange));
 
 			// set up toolbar
 			if (defaultConfiguration.ShowToolbarButton)
@@ -161,6 +159,9 @@ namespace TUFX
 			if (Resources == null)
 			{
 				loadResources();
+
+				GameEvents.onLevelWasLoaded.Add(new EventData<GameScenes>.OnEvent(onLevelLoaded));
+				GameEvents.OnCameraChange.Add(new EventData<CameraManager.CameraMode>.OnEvent(cameraChange));
 			}
 
 			loadTextures();
