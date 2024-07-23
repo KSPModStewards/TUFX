@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace TUFX
 {
-
 	public class TUFXGameSettings : GameParameters.CustomParameterNode
 	{
 
@@ -33,9 +32,6 @@ namespace TUFX
 			TrackingStationProfile = defaults.TrackingStationProfile;
 		}
 
-		[GameParameters.CustomStringParameterUI("TUFX Profiles - Must be selected through in-game profile editor.", gameMode = GameParameters.GameMode.ANY, lines = 3, toolTip = "Profiles only shown here to enable per-save-game persistence.")]
-		public string WarningLabel = string.Empty;
-
 		[GameParameters.CustomStringParameterUI("Flight Scene Profile: ", gameMode = GameParameters.GameMode.ANY, lines = 1, toolTip = "Active Profile in the Flight Scene")]
 		public string FlightSceneProfile;
 
@@ -54,6 +50,32 @@ namespace TUFX
 		[GameParameters.CustomStringParameterUI("Tracking Station Profile: ", gameMode = GameParameters.GameMode.ANY, lines = 1, toolTip = "Active Profile in the Tracking Station Scene")]
 		public string TrackingStationProfile;
 
-	}
+		internal void SetProfileName(string profileName, TUFXScene scene)
+		{
+			switch (scene)
+			{
+				case TUFXScene.Flight: FlightSceneProfile = profileName; break;
+				case TUFXScene.Internal: IVAProfile = profileName; break;
+				case TUFXScene.Map: MapSceneProfile = profileName; break;
+				case TUFXScene.Editor: EditorSceneProfile = profileName; break;
+				case TUFXScene.SpaceCenter: SpaceCenterSceneProfile = profileName; break;
+				case TUFXScene.TrackingStation: TrackingStationProfile = profileName; break;
+			}
+		}
 
+		internal string GetProfileName(TUFXScene scene)
+		{
+			switch (scene)
+			{
+				case TUFXScene.Flight: return FlightSceneProfile;
+				case TUFXScene.Internal: return IVAProfile;
+				case TUFXScene.Map: return MapSceneProfile;
+				case TUFXScene.Editor: return EditorSceneProfile;
+				case TUFXScene.SpaceCenter: return SpaceCenterSceneProfile;
+				case TUFXScene.TrackingStation: return TrackingStationProfile;
+			}
+
+			return string.Empty;
+		}
+	}
 }

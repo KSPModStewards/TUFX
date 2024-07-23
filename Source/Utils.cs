@@ -216,6 +216,33 @@ namespace TUFX
 			return fVals;
 		}
 
+		static internal TUFXScene GetTUFXSceneForCameraMode(CameraManager.CameraMode cameraMode)
+		{
+			switch (CameraManager.Instance.currentCameraMode)
+			{
+				case CameraManager.CameraMode.Map:
+					return TUFXScene.Map;
+				case CameraManager.CameraMode.Internal:
+				case CameraManager.CameraMode.IVA:
+					return TUFXScene.Internal;
+				default:
+					return TUFXScene.Flight;
+			}
+		}
+
+		static internal TUFXScene GetCurrentScene()
+		{
+			switch (HighLogic.LoadedScene)
+			{
+				case GameScenes.MAINMENU: return TUFXScene.MainMenu;
+				case GameScenes.TRACKSTATION: return TUFXScene.TrackingStation;
+				case GameScenes.EDITOR: return TUFXScene.Editor;
+				case GameScenes.SPACECENTER: return TUFXScene.SpaceCenter;
+				case GameScenes.FLIGHT: return GetTUFXSceneForCameraMode(CameraManager.Instance.currentCameraMode);
+			}
+
+			return TUFXScene.Flight;
+		}
 	}
 
 	public static class Log

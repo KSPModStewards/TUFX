@@ -208,7 +208,8 @@ namespace TUFX
 
 		private void renderSelectionWindow()
 		{
-			AddLabelRow("Current Scene: " + HighLogic.LoadedScene + " map view active: " + MapView.MapIsEnabled + " internal cam active: " + (InternalCamera.Instance != null && InternalCamera.Instance.isActive));
+			TUFXScene scene = Utils.GetCurrentScene();
+			AddLabelRow("Current Scene: " + scene);
 			AddLabelRow("Current Profile: " + TexturesUnlimitedFXLoader.INSTANCE.CurrentProfileName);
 			AddLabelRow("Select a new profile for current scene: ");
 			scrollPos = GUILayout.BeginScrollView(scrollPos);
@@ -221,7 +222,7 @@ namespace TUFX
 				{
 					string newProfileName = profileNames[i];
 					Log.debug("Profile Selected: " + newProfileName);
-					TexturesUnlimitedFXLoader.INSTANCE.setProfileForScene(newProfileName, HighLogic.LoadedScene, true);
+					TexturesUnlimitedFXLoader.INSTANCE.ChangeProfileForScene(newProfileName, scene);
 				}
 				GUILayout.EndHorizontal();
 			}
@@ -652,7 +653,7 @@ namespace TUFX
 			{
 				effect = ScriptableObject.CreateInstance<T>();
 				TexturesUnlimitedFXLoader.INSTANCE.CurrentProfile.Settings.Add(effect);
-				TexturesUnlimitedFXLoader.INSTANCE.enableProfileForCurrentScene();
+				TexturesUnlimitedFXLoader.INSTANCE.RefreshCameras();
 			}
 
 			if (effect)

@@ -9,6 +9,16 @@ using UnityEngine.Rendering.PostProcessing;
 
 namespace TUFX
 {
+	public enum TUFXScene
+	{
+		MainMenu,
+		SpaceCenter,
+		Editor,
+		Flight,
+		Map,
+		Internal,
+		TrackingStation,
+	}
 
 	/// <summary>
 	/// The main KSPAddon that holds profile loading and handling logic, resource reference storage,
@@ -39,6 +49,7 @@ namespace TUFX
 		public class Configuration
 		{
 			public const string NODE_NAME = "TUFX_CONFIGURATION";
+			public const string EMPTY_PROFILE_NAME = "Default-Empty";
 
 			[Persistent] public string MainMenuProfile = "Default-MainMenu";
 			[Persistent] public string SpaceCenterSceneProfile = "Default-KSC";
@@ -48,6 +59,21 @@ namespace TUFX
 			[Persistent] public string IVAProfile = "Default-Internal";
 			[Persistent] public string TrackingStationProfile = "Default-Tracking";
 			[Persistent] public bool ShowToolbarButton = true;
+
+			public string GetProfileName(TUFXScene scene)
+			{
+				switch (scene)
+				{
+					case TUFXScene.MainMenu: return MainMenuProfile;
+					case TUFXScene.SpaceCenter: return SpaceCenterSceneProfile;
+					case TUFXScene.Editor: return EditorSceneProfile;
+					case TUFXScene.Flight: return FlightSceneProfile;
+					case TUFXScene.Map: return MapSceneProfile;
+					case TUFXScene.Internal: return IVAProfile;
+					case TUFXScene.TrackingStation: return TrackingStationProfile;
+				}
+				return string.Empty;
+			}
 		}
 
 		internal static UrlDir.UrlConfig defaultConfigUrl = null;
@@ -140,13 +166,6 @@ namespace TUFX
 			loadTextures();
 
 			loadProfiles();
-
-			//If configs are reloaded via module-manager from the space center scene... reload and reapply the currently selected profile from game persistence data
-			//if for some reason that profile does not exist, nothing will be applied and an error will be logged.
-			if (HighLogic.LoadedScene == GameScenes.SPACECENTER)
-			{
-				enableProfileForCurrentScene();
-			}
 		}
 
 		/// <summary>
@@ -414,124 +433,67 @@ namespace TUFX
 		/// Callback for when a scene has been fully loaded.
 		/// </summary>
 		/// <param name="scene"></param>
-		private void onLevelLoaded(GameScenes scene)
+		private void onLevelLoaded(GameScenes gameScene)
 		{
-			Log.debug("TUFXLoader - onLevelLoaded( " + scene + " )");
+			Log.debug("TUFXLoader - onLevelLoaded( " + gameScene + " )");
 
 			CloseConfigGui();
-			//finally, enable the profile for the current scene
-			enableProfileForCurrentScene();
+
+			TUFXScene tufxScene = Utils.GetCurrentScene();
+			string profileName = GetProfileNameForScene(tufxScene);
+			TUFXProfile profile = GetProfileByName(profileName);
+			ApplyProfile(profile, tufxScene);
 		}
 
 		private void cameraChange(CameraManager.CameraMode newCameraMode)
 		{
-			enableProfileForCurrentScene();
+			TUFXScene tufxScene = Utils.GetTUFXSceneForCameraMode(newCameraMode);
+			string profileName = GetProfileNameForScene(tufxScene);
+			TUFXProfile profile = GetProfileByName(profileName);
+			ApplyProfile(profile, tufxScene);
 		}
 
-		/// <summary>
-		/// Public method to specify a new profile name for the input game scene (and map view setting, in the case of flight-scene).
-		/// This will udpate the game persistence data with the name specified, and optionally enable the profile now.
-		/// </summary>
-		/// <param name="profile"></param>
-		/// <param name="scene">the game scene to which the new profile should be applied</param>
-		/// <param name="isMapScene">Update the 'flight map scene' if this is true and scene==flight</param>
-		/// <param name="enableNow">True to enable the profile for the current scene</param>
-		internal void setProfileForScene(string profile, GameScenes scene, bool enableNow = false)
+		// top-level function for switching to a different profile from the config gui
+		internal void ChangeProfileForScene(string profileName, TUFXScene tufxScene)
 		{
-			switch (scene)
+			if (tufxScene == TUFXScene.MainMenu)
 			{
-				case GameScenes.MAINMENU:
-					defaultConfiguration.MainMenuProfile = profile;
-					if (defaultConfigUrl != null)
-					{
-						defaultConfigUrl.config = new ConfigNode(Configuration.NODE_NAME);
-						ConfigNode.WriteObject(defaultConfiguration, defaultConfigUrl.config, 0);
-						defaultConfigUrl.parent.SaveConfigs();
-					}
-					break;
-				case GameScenes.SPACECENTER:
-					HighLogic.CurrentGame.Parameters.CustomParams<TUFXGameSettings>().SpaceCenterSceneProfile = profile;
-					break;
-				case GameScenes.EDITOR:
-					HighLogic.CurrentGame.Parameters.CustomParams<TUFXGameSettings>().EditorSceneProfile = profile;
-					break;
-				case GameScenes.FLIGHT:
-					switch (CameraManager.Instance.currentCameraMode)
-					{
-						case CameraManager.CameraMode.Flight:
-							HighLogic.CurrentGame.Parameters.CustomParams<TUFXGameSettings>().FlightSceneProfile = profile;
-							break;
-						case CameraManager.CameraMode.Map:
-							HighLogic.CurrentGame.Parameters.CustomParams<TUFXGameSettings>().MapSceneProfile = profile;
-							break;
-						case CameraManager.CameraMode.IVA:
-						case CameraManager.CameraMode.Internal:
-							HighLogic.CurrentGame.Parameters.CustomParams<TUFXGameSettings>().IVAProfile = profile;
-							break;
-					}
-					break;
-				case GameScenes.TRACKSTATION:
-					HighLogic.CurrentGame.Parameters.CustomParams<TUFXGameSettings>().TrackingStationProfile = profile;
-					break;
+				defaultConfiguration.MainMenuProfile = profileName;
+				if (defaultConfigUrl != null)
+				{
+					defaultConfigUrl.config = new ConfigNode(Configuration.NODE_NAME);
+					ConfigNode.WriteObject(defaultConfiguration, defaultConfigUrl.config, 0);
+					defaultConfigUrl.parent.SaveConfigs();
+				}
 			}
-			if (enableNow)
+			else
 			{
-				SetCurrentProfile(profile);
+				HighLogic.CurrentGame.Parameters.CustomParams<TUFXGameSettings>().SetProfileName(profileName, tufxScene);
 			}
+
+			TUFXProfile profile = GetProfileByName(profileName);
+			ApplyProfile(profile, tufxScene);
 		}
 
-		public string GetProfileNameForCurrentScene(TUFXGameSettings gameSettings)
+		public string GetProfileNameForScene(TUFXScene tufxScene)
 		{
-			string profileName = string.Empty;
-			switch (HighLogic.LoadedScene)
+			if (tufxScene == TUFXScene.MainMenu)
 			{
-				case GameScenes.MAINMENU:
-					profileName = defaultConfiguration.MainMenuProfile;
-					break;
-				case GameScenes.SPACECENTER:
-					profileName = gameSettings.SpaceCenterSceneProfile;
-					break;
-				case GameScenes.EDITOR:
-					profileName = gameSettings.EditorSceneProfile;
-					break;
-				case GameScenes.FLIGHT:
-					switch (CameraManager.Instance.currentCameraMode)
-					{
-						case CameraManager.CameraMode.Flight:
-							profileName = gameSettings.FlightSceneProfile;
-							break;
-						case CameraManager.CameraMode.Map:
-							profileName = gameSettings.MapSceneProfile;
-							break;
-						case CameraManager.CameraMode.IVA:
-						case CameraManager.CameraMode.Internal:
-							profileName = gameSettings.IVAProfile;
-							break;
-					}
-					break;
-				case GameScenes.TRACKSTATION:
-					profileName = gameSettings.TrackingStationProfile;
-					break;
+				return defaultConfiguration.MainMenuProfile;
 			}
-
-			return profileName;
-		}
-
-		/// <summary>
-		/// Looks up the profile for the current scene from the game persistence data and attempts to enable it.
-		/// </summary>
-		internal void enableProfileForCurrentScene()
-		{
-			string profileName = GetProfileNameForCurrentScene(HighLogic.CurrentGame?.Parameters?.CustomParams<TUFXGameSettings>());
-			if (string.IsNullOrEmpty(profileName) || !Profiles.ContainsKey(profileName))
+			else
 			{
-				Log.debug($"TUFX - game settings for scene {HighLogic.LoadedScene} named {profileName} not found; falling back to defaults");
-				var defaultSettings = new TUFXGameSettings();
-				profileName = GetProfileNameForCurrentScene(defaultSettings);
-			}
+				TUFXGameSettings settings = HighLogic.CurrentGame?.Parameters?.CustomParams<TUFXGameSettings>();
 
-			Log.debug("TUFX - Enabling profile for current scene: " + HighLogic.LoadedScene + " profile: " + profileName);
-			SetCurrentProfile(profileName);
+				if (settings != null)
+				{
+					return settings.GetProfileName(tufxScene);
+				}
+				else
+				{
+					return defaultConfiguration.GetProfileName(tufxScene);
+				}
+			}
 		}
 
 		private void ApplyProfileToCamera(Camera camera, TUFXProfile tufxProfile, bool isFinalCamera, bool isPrimaryCamera)
@@ -555,9 +517,11 @@ namespace TUFX
 			layer.fastApproximateAntialiasing = aaParameters.FastApproximateAntialiasing;
 		}
 
-		private void ApplyCurrentProfile()
+		private void ApplyProfile(TUFXProfile profile, TUFXScene tufxScene)
 		{
-			if (currentProfile == null) return;
+			if (profile == null) return;
+
+			currentProfile = profile;
 
 			var bloomSettings = currentProfile.GetSettingsFor<Bloom>();
 			if (currentProfile.HDREnabled && bloomSettings != null && bloomSettings.active)
@@ -567,49 +531,44 @@ namespace TUFX
 
 			mainVolume.sharedProfile = currentProfile.CreatePostProcessProfile();
 
-			if (HighLogic.LoadedScene == GameScenes.MAINMENU || HighLogic.LoadedScene == GameScenes.SPACECENTER || HighLogic.LoadedScene == GameScenes.EDITOR)
-			{
-				ApplyProfileToCamera(Camera.main, currentProfile, true, true);
-			}
-			if (HighLogic.LoadedScene == GameScenes.EDITOR)
+			if (tufxScene == TUFXScene.Editor)
 			{
 				var editorCameras = EditorCamera.Instance.cam.gameObject.GetComponentsInChildren<Camera>();
 				foreach (var cam in editorCameras)
 				{
+					// don't apply to main camera since that will be done later
 					if (!object.ReferenceEquals(cam, Camera.main))
 					{
 						ApplyProfileToCamera(cam, currentProfile, false, false);
 					}
 				}
 			}
-			bool scaledCameraIsPrimary = HighLogic.LoadedScene == GameScenes.TRACKSTATION || MapView.MapIsEnabled;
-			bool internalCameraIsFinal = CameraManager.Instance?.currentCameraMode != CameraManager.CameraMode.Flight;
+			bool scaledCameraIsPrimary = tufxScene == TUFXScene.Map || tufxScene == TUFXScene.TrackingStation;
+			bool internalCameraIsFinal = tufxScene == TUFXScene.Internal;
 
 			ApplyProfileToCamera(InternalCamera.Instance?.GetComponent<Camera>(), currentProfile, internalCameraIsFinal, false);
 			ApplyProfileToCamera(ScaledCamera.Instance?.cam, currentProfile, scaledCameraIsPrimary, scaledCameraIsPrimary);
-			if (HighLogic.LoadedScene == GameScenes.FLIGHT)
-			{
-				ApplyProfileToCamera(FlightCamera.fetch?.mainCamera, currentProfile, !internalCameraIsFinal, true);
-			}
-		}
-
-		/// <summary>
-		/// Enables the input profile for the currently rendering scene (menu, ksc, editor, tracking, flight, flight-map)
-		/// </summary>
-		/// <param name="profileName"></param>
-		internal void SetCurrentProfile(string profileName)
-		{
-			if (Profiles.TryGetValue(profileName, out TUFXProfile profile))
-			{
-				currentProfile = profile;
-				ApplyCurrentProfile();
-			}
+			ApplyProfileToCamera(Camera.main, currentProfile, !internalCameraIsFinal, !scaledCameraIsPrimary);
 		}
 
 		// called from the UI when HDR or antialiasing settings have changed; which need to change settings on the camera itself
 		internal void RefreshCameras()
 		{
-			ApplyCurrentProfile();
+			ApplyProfile(currentProfile, Utils.GetCurrentScene());
+		}
+
+		// returns the profile or default-empty
+		private TUFXProfile GetProfileByName(string profileName)
+		{
+			if (Profiles.TryGetValue(profileName, out var profile))
+			{
+				return profile;
+			}
+
+
+
+			Log.error($"Profile {profileName} not found; falling back to {Configuration.EMPTY_PROFILE_NAME}");
+			return Profiles[Configuration.EMPTY_PROFILE_NAME];
 		}
 
 		/// <summary>
