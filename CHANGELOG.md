@@ -23,7 +23,8 @@
 * New dependencies: ClickThroughBlocker, ToolbarController
 * Remove patch that disables scatterer's temporal antialiasing
 * Better default profile settings (mostly removing the neutral tonemapper which tended to result in a desaturated image)
-* Added clickthroughblocker support (this is now a dependency)
+* Added toolbarcontrol integration (you can use this to hide the toolbar button)
+* Added clickthroughblocker support and other code to prevent mouse interactions from affecting other things when interacting with the config window
 * Fixed icons appearing blurry when game is not at full texture resolution
 * Added a "close window" button to the config window so that you can click it when in photo mode.  To use TUFX in photo mode:
     * Open the TUFX window
@@ -35,4 +36,10 @@
 * Configuration window now loads and saves directly to cfg files
 * Redesigned profile editor UI
 * Postprocessing effects now only apply to the final camera so that they don't get doubled up when in IVA or other situations.
-* Added a secondary camera antialiasing setting.  The old setting will be applied only to the main camera (local space in flight).  The secondary antialiasing method will be applied to other cameras (galaxycam, scaled space, internal camera).  This prevents smearing when using temporal antialiasing because the cameras do not share motion information.
+* Added a secondary camera antialiasing setting.  The old setting will be applied only to the main camera (local space in flight).  The secondary antialiasing method will be applied to other cameras (scaled space, internal camera, editor cameras).  This prevents smearing when using temporal antialiasing because the cameras do not share motion information.
+* Fixed a bug where the bloom diffusion parameter would not get loaded from the profile
+* Fixed a NullReferenceException when saving a texture param with nothing selected
+* Added properties to customize antialiasing settings
+* Added support for changing the mainmenu profile in-game
+* Added a separate default profile for IVA mode
+* Properly set HDR on the GalaxyCamera
