@@ -1,6 +1,7 @@
 .vs/
 bin/
 obj/
+Releases/
 GameData/TUFX/Plugins/
 *.user
 packages/
