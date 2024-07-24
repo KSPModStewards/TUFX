@@ -1,4 +1,5 @@
 ﻿using ClickThroughFix;
+using KSP.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,12 +83,14 @@ namespace TUFX
 		{
 			try
 			{
-				windowRect = ClickThruBlocker.GUIWindow(windowID, windowRect, updateWindow, "TUFXSettings", HighLogic.Skin.window);
+				if (UIMasterController.Instance.IsUIShowing)
+				{
+					windowRect = ClickThruBlocker.GUIWindow(windowID, windowRect, updateWindow, "TUFXSettings", HighLogic.Skin.window);
 
-				var rectTransform = transform as RectTransform;
-				rectTransform.anchoredPosition = new Vector2(windowRect.x, Screen.height - windowRect.y - windowRect.height);
-				rectTransform.sizeDelta = new Vector2(windowRect.width, windowRect.height);
-				
+					var rectTransform = transform as RectTransform;
+					rectTransform.anchoredPosition = new Vector2(windowRect.x, Screen.height - windowRect.y - windowRect.height);
+					rectTransform.sizeDelta = new Vector2(windowRect.width, windowRect.height);
+				}
 			}
 			catch (Exception e)
 			{

@@ -18,20 +18,19 @@
 
 ## Unreleased
 
+### New Dependencies
+
+* ClickThroughBlocker
+* ToolbarController
+
 ### Notable Changes
 
-* New dependencies: ClickThroughBlocker, ToolbarController
 * Remove patch that disables scatterer's temporal antialiasing
 * Better default profile settings (mostly removing the neutral tonemapper which tended to result in a desaturated image)
 * Added toolbarcontrol integration (you can use this to hide the toolbar button)
 * Added clickthroughblocker support and other code to prevent mouse interactions from affecting other things when interacting with the config window
 * Fixed icons appearing blurry when game is not at full texture resolution
-* Added a "close window" button to the config window so that you can click it when in photo mode.  To use TUFX in photo mode:
-    * Open the TUFX window
-    * Press escape
-    * Press F2
-    * You can now move the camera around and change TUFX settings
-    * When you have the settings you like, close the TUFX window and press F1 to take a screenshot
+* TUFX window is now hidden when you press F2 (this is useful in photo mode - press escape then F2)
 * Disable stock antialiasing when HDR and bloom are enabled to prevent strobing artifacts
 * Configuration window now loads and saves directly to cfg files
 * Redesigned profile editor UI
