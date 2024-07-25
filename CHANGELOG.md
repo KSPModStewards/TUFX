@@ -42,6 +42,7 @@
 * Added support for changing the mainmenu profile in-game
 * Added a separate default profile for IVA mode
 * Properly set HDR on the GalaxyCamera
+* Add support for [KerbalChangelog](https://forum.kerbalspaceprogram.com/topic/200702-19%E2%80%93112-kerbal-changelog-v142-adopted/)
 
 
 ## 1.0.7.1 - 2023-08-13
