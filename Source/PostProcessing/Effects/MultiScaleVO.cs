@@ -51,12 +51,6 @@ namespace UnityEngine.Rendering.PostProcessing
         // command buffer warning
         RenderTexture m_AmbientOnlyAO;
 
-        readonly RenderTargetIdentifier[] m_MRT =
-        {
-            BuiltinRenderTextureType.GBuffer0,    // Albedo, Occ
-            BuiltinRenderTextureType.CameraTarget // Ambient
-        };
-
         public MultiScaleVO(AmbientOcclusion settings)
         {
             m_Settings = settings;
@@ -532,7 +526,7 @@ namespace UnityEngine.Rendering.PostProcessing
             var cmd = context.command;
             cmd.BeginSample("Ambient Occlusion Composite");
             cmd.SetGlobalTexture(ShaderIDs.MSVOcclusionTexture, m_AmbientOnlyAO);
-            cmd.BlitFullscreenTriangle(BuiltinRenderTextureType.None, m_MRT, BuiltinRenderTextureType.CameraTarget, m_PropertySheet, (int)Pass.CompositionDeferred);
+            cmd.BlitFullscreenTriangle(BuiltinRenderTextureType.None, BuiltinRenderTextureType.GBuffer0, BuiltinRenderTextureType.CameraTarget, m_PropertySheet, (int)Pass.CompositionDeferred);
             cmd.EndSample("Ambient Occlusion Composite");
         }
 

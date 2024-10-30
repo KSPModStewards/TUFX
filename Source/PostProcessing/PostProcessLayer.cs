@@ -568,8 +568,8 @@ namespace UnityEngine.Rendering.PostProcessing
                 context.command = m_LegacyCmdBufferBeforeReflections;
                 ao.RenderAmbientOnly(context);
 
-                // Composite with GBuffer right before the lighting pass
-                context.command = m_LegacyCmdBufferBeforeLighting;
+                // Composite with GBuffer before reflections pass which Deferred uses for ambient
+                context.command = m_LegacyCmdBufferBeforeReflections;
                 ao.CompositeAmbientOnly(context);
             }
             else if (isAmbientOcclusionOpaque)
