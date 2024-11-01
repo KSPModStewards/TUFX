@@ -16,6 +16,14 @@
 * Restock launch clamps do not render properly in the editor
 * ***IMPORTANT***:  If you experience blurring or smearing, try turning off temporal antialiasing in scatterer's settings.  If they persist, also disable temporal antialiasing in your TUFX profile as well as motion blur.  Once you've eliminated the issue, turn settings back on one by one until you find something you like.
 
+## Unreleased
+
+### Changes
+
+* Actually hooked up Default-Internal profile as the default for IVA mode
+* Switched Default-Internal to use SVO for Ambient Occlusion
+* Merged changes from @LGhassen to fix artifacts with MSVO Ambient Occlusion with Deferred
+
 ## 1.1.0 - 2024-07-24
 
 ### New Dependencies
