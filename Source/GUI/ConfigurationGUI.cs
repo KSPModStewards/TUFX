@@ -27,6 +27,8 @@ namespace TUFX
 
 		/// <summary>
 		/// Cached dictionaries of temporary variables used by the UI for user-input values.
+		/// These are necessary because IMGUI is stateless; otherwise it is difficult for a user to type a number
+		/// with a decimal since a roundtrip through Parse and ToString will remove it
 		/// </summary>
 		private Dictionary<string, string> propertyStringStorage = new Dictionary<string, string>();
 		private Dictionary<string, float> propertyFloatStorage = new Dictionary<string, float>();
@@ -804,11 +806,22 @@ namespace TUFX
 			GUILayout.BeginHorizontal();
 			GUILayout.Label(label, GUILayout.Width(200), GUILayout.Height(22));
 
-			string oldValue = value.ToString();
-			string newValue = GUILayout.TextArea(oldValue, GUILayout.Width(110));
-			if (newValue != oldValue)
+			if (propertyStringStorage.ContainsKey(label))
 			{
-				float.TryParse(newValue, out value);
+				string oldValue = propertyStringStorage[label];
+				string newValue = GUILayout.TextArea(oldValue, GUILayout.Width(110));
+				if (newValue != oldValue)
+				{
+					propertyStringStorage[label] = newValue;
+					if (float.TryParse(newValue, out float v))
+					{
+						value = v;
+					}
+				}
+			}
+			else
+			{
+				propertyStringStorage.Add(label, value.ToString());
 			}
 
 			value = GUILayout.HorizontalSlider(value, min, max, GUILayout.Width(330));
