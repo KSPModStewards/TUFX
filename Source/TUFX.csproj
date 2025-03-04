@@ -1,9 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\KSPBuildTools.0.0.2\build\KSPBuildTools.props" Condition="Exists('..\packages\KSPBuildTools.0.0.2\build\KSPBuildTools.props')" />
-  <Import Project="..\packages\JsonPoke.1.2.0\build\JsonPoke.props" Condition="Exists('..\packages\JsonPoke.1.2.0\build\JsonPoke.props')" />
-  <Import Project="..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props" Condition="Exists('..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props')" />
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -12,12 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TUFX</RootNamespace>
     <AssemblyName>TUFX</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <TargetFramework>net4.8</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,7 +30,6 @@
   <PropertyGroup>
     <BinariesOutputRelativePath>GameData\TUFX\Plugins</BinariesOutputRelativePath>
   </PropertyGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Reference Include="$(KSPRoot)\GameData\000_ClickThroughBlocker\Plugins\ClickThroughBlocker.dll">
       <Private>false</Private>
@@ -51,105 +41,25 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TexturesUnlimitedFXLoader.cs" />
-    <Compile Include="GUI\ConfigurationGUI.cs" />
-    <Compile Include="GUI\DebugGUI.cs" />
-    <Compile Include="GUI\SplineConfigurationGUI.cs" />
-    <Compile Include="PostProcessing\Attributes\DisplayNameAttribute.cs" />
-    <Compile Include="PostProcessing\Attributes\MaxAttribute.cs" />
-    <Compile Include="PostProcessing\Attributes\MinAttribute.cs" />
-    <Compile Include="PostProcessing\Attributes\MinMaxAttribute.cs" />
-    <Compile Include="PostProcessing\Attributes\PostProcessAttribute.cs" />
-    <Compile Include="PostProcessing\Attributes\TrackballAttribute.cs" />
-    <Compile Include="PostProcessing\Effects\AmbientOcclusion.cs" />
-    <Compile Include="PostProcessing\Effects\AutoExposure.cs" />
-    <Compile Include="PostProcessing\Effects\Bloom.cs" />
-    <Compile Include="PostProcessing\Effects\ChromaticAberration.cs" />
-    <Compile Include="PostProcessing\Effects\ColorGrading.cs" />
-    <Compile Include="PostProcessing\Effects\DepthOfField.cs" />
-    <Compile Include="PostProcessing\Effects\Dithering.cs" />
-    <Compile Include="PostProcessing\Effects\FastApproximateAntialiasing.cs" />
-    <Compile Include="PostProcessing\Effects\Fog.cs" />
-    <Compile Include="PostProcessing\Effects\Grain.cs" />
-    <Compile Include="PostProcessing\Effects\LensDistortion.cs" />
-    <Compile Include="PostProcessing\Effects\MotionBlur.cs" />
-    <Compile Include="PostProcessing\Effects\MultiScaleVO.cs" />
-    <Compile Include="PostProcessing\Effects\ScalableAO.cs" />
-    <Compile Include="PostProcessing\Effects\ScreenSpaceReflections.cs" />
-    <Compile Include="PostProcessing\Effects\SubpixelMorphologicalAntialiasing.cs" />
-    <Compile Include="PostProcessing\Effects\TemporalAntialiasing.cs" />
-    <Compile Include="PostProcessing\Effects\Vignette.cs" />
-    <Compile Include="PostProcessing\Monitors\HistogramMonitor.cs" />
-    <Compile Include="PostProcessing\Monitors\LightMeterMonitor.cs" />
-    <Compile Include="PostProcessing\Monitors\Monitor.cs" />
-    <Compile Include="PostProcessing\Monitors\VectorscopeMonitor.cs" />
-    <Compile Include="PostProcessing\Monitors\WaveformMonitor.cs" />
-    <Compile Include="PostProcessing\ParameterOverride.cs" />
-    <Compile Include="PostProcessing\PostProcessBundle.cs" />
-    <Compile Include="PostProcessing\PostProcessDebug.cs" />
-    <Compile Include="PostProcessing\PostProcessDebugLayer.cs" />
-    <Compile Include="PostProcessing\PostProcessEffectRenderer.cs" />
-    <Compile Include="PostProcessing\PostProcessEffectSettings.cs" />
-    <Compile Include="PostProcessing\PostProcessEvent.cs" />
-    <Compile Include="PostProcessing\PostProcessLayer.cs" />
-    <Compile Include="PostProcessing\PostProcessManager.cs" />
-    <Compile Include="PostProcessing\PostProcessProfile.cs" />
-    <Compile Include="PostProcessing\PostProcessRenderContext.cs" />
-    <Compile Include="PostProcessing\PostProcessResources.cs" />
-    <Compile Include="PostProcessing\PostProcessVolume.cs" />
-    <Compile Include="PostProcessing\Utils\ColorUtilities.cs" />
-    <Compile Include="PostProcessing\Utils\HableCurve.cs" />
-    <Compile Include="PostProcessing\Utils\HaltonSeq.cs" />
-    <Compile Include="PostProcessing\Utils\LogHistogram.cs" />
-    <Compile Include="PostProcessing\Utils\MeshUtilities.cs" />
-    <Compile Include="PostProcessing\Utils\PropertySheet.cs" />
-    <Compile Include="PostProcessing\Utils\PropertySheetFactory.cs" />
-    <Compile Include="PostProcessing\Utils\RuntimeUtilities.cs" />
-    <Compile Include="PostProcessing\Utils\ShaderIDs.cs" />
-    <Compile Include="PostProcessing\Utils\Spline.cs" />
-    <Compile Include="PostProcessing\Utils\TargetPool.cs" />
-    <Compile Include="PostProcessing\Utils\TextureFormatUtilities.cs" />
-    <Compile Include="PostProcessing\Utils\TextureLerper.cs" />
-    <Compile Include="PostProcessing\Utils\XRSettings.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scattering\CBRead.cs" />
-    <Compile Include="Scattering\CBWrite.cs" />
-    <Compile Include="Scattering\CONSTANTS.cs" />
-    <Compile Include="Scattering\DensityProfileLayer.cs" />
-    <Compile Include="Scattering\Model.cs" />
-    <Compile Include="Scattering\TextureBuffer.cs" />
-    <Compile Include="Scattering\TUBISEffect.cs" />
-    <Compile Include="Scattering\TUFXScatteringManager.cs" />
-    <Compile Include="Scattering\TUFXScatteringResources.cs" />
-    <Compile Include="TUFXGameSettings.cs" />
-    <Compile Include="TUFXProfile.cs" />
-    <Compile Include="TUFXEffectTextureList.cs" />
-    <Compile Include="Utils.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\.editorconfig">
       <Link>.editorconfig</Link>
     </None>
-    <None Include="packages.config" />
     <None Include="PostProcessing\.editorconfig" />
     <None Include="PostProcessing\Unity.Postprocessing.Runtime.asmdef" />
     <None Include="Properties\AssemblyInfo.cs.versiontemplate" />
   </ItemGroup>
   <ItemGroup>
-    <Publicize Include="Assembly-CSharp" />
+    <Publicize Include="Assembly-CSharp" IncludeCompilerGeneratedMembers="false" />
   </ItemGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.props'))" />
-    <Error Condition="!Exists('..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets'))" />
-    <Error Condition="!Exists('..\packages\JsonPoke.1.2.0\build\JsonPoke.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JsonPoke.1.2.0\build\JsonPoke.props'))" />
-    <Error Condition="!Exists('..\packages\JsonPoke.1.2.0\build\JsonPoke.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JsonPoke.1.2.0\build\JsonPoke.targets'))" />
-    <Error Condition="!Exists('..\packages\KSPBuildTools.0.0.2\build\KSPBuildTools.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\KSPBuildTools.0.0.2\build\KSPBuildTools.props'))" />
-    <Error Condition="!Exists('..\packages\KSPBuildTools.0.0.2\build\KSPBuildTools.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\KSPBuildTools.0.0.2\build\KSPBuildTools.targets'))" />
-  </Target>
-  <Import Project="..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets" Condition="Exists('..\packages\Krafs.Publicizer.2.2.1\build\Krafs.Publicizer.targets')" />
-  <Import Project="..\packages\JsonPoke.1.2.0\build\JsonPoke.targets" Condition="Exists('..\packages\JsonPoke.1.2.0\build\JsonPoke.targets')" />
-  <Import Project="..\packages\KSPBuildTools.0.0.2\build\KSPBuildTools.targets" Condition="Exists('..\packages\KSPBuildTools.0.0.2\build\KSPBuildTools.targets')" />
+  <PropertyGroup>
+    <PublicizerClearCacheOnClean>true</PublicizerClearCacheOnClean>
+    <PublicizeAsReferenceAssemblies>false</PublicizeAsReferenceAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Krafs.Publicizer" Version="2.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="KSPBuildTools" Version="0.0.3" />
+  </ItemGroup>
 </Project>
