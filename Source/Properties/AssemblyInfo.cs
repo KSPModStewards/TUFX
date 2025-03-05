@@ -18,7 +18,3 @@ using System.Runtime.InteropServices;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("02efb286-38a9-47c4-83cd-6dd59077aa2f")]
 
-[assembly: KSPAssembly("TUFX", 1, 1, 0)]
-
-[assembly: KSPAssemblyDependency("ClickThroughBlocker", 1, 0)]
-[assembly: KSPAssemblyDependency("ToolbarController", 1, 0)]
