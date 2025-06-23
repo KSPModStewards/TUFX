@@ -39,6 +39,7 @@
       <HintPath>$(KSPRoot)\GameData\001_ToolbarControl\Plugins\ToolbarControl.dll</HintPath>
       <Private>false</Private>
       <CKANIdentifier>ToolbarController</CKANIdentifier>
+	  <KSPAssemblyName>ToolbarController</KSPAssemblyName>
       <KSPAssemblyVersion>1.0</KSPAssemblyVersion>
     </Reference>
   </ItemGroup>
