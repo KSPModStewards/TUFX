@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
+using Log = KSPBuildTools.Log;
 
 namespace TUFX
 {
@@ -226,7 +227,7 @@ namespace TUFX
 				if (GUILayout.Button(profileNames[i]))
 				{
 					string newProfileName = profileNames[i];
-					Log.debug("Profile Selected: " + newProfileName);
+					Log.Debug("Profile Selected: " + newProfileName);
 					TexturesUnlimitedFXLoader.INSTANCE.ChangeProfileForScene(newProfileName, scene);
 				}
 				GUILayout.EndHorizontal();

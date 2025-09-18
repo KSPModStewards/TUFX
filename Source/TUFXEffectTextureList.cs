@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using Log = KSPBuildTools.Log;
 
 namespace TUFX
 {
@@ -45,7 +46,7 @@ namespace TUFX
 			List<Texture2D> textures;
 			if (!propertyTextures.TryGetValue(propertyName, out textures))
 			{
-				Log.debug("No textures found for property: " + propertyName);
+				Log.Debug("No textures found for property: " + propertyName);
 				return new List<Texture2D>();//because C# doesn't have a static (and typed) empty list construct?
 			}
 			return textures;

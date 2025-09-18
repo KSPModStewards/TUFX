@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
+using Log = KSPBuildTools.Log;
 
 namespace TUFX
 {
@@ -42,7 +43,7 @@ namespace TUFX
 				GameObject[] objects = GameObject.FindObjectsOfType<GameObject>();
 				foreach (GameObject go in objects)
 				{
-					Log.debug("Main Menu Object: " + go.name + " pos: " + go.transform.position + " parent: " + go.transform.parent?.name);
+					Log.Debug("Main Menu Object: " + go.name + " pos: " + go.transform.position + " parent: " + go.transform.parent?.name);
 				}
 				if (debugModel != null)
 				{
@@ -56,7 +57,7 @@ namespace TUFX
 		{
 			if (TUFXScatteringResources.PrecomputeShader == null)
 			{
-				Log.debug("Could not create model; precompute shader is null...");
+				Log.Debug("Could not create model; precompute shader is null...");
 				return;
 			}
 			createTestModel();
@@ -109,7 +110,7 @@ namespace TUFX
 		private void createTestModel()
 		{
 			if (debugModel != null) { return; }
-			Log.debug("Creating debug atmo model...");
+			Log.Debug("Creating debug atmo model...");
 			// Values from "Reference Solar Spectral Irradiance: ASTM G-173", ETR column
 			// (see http://rredc.nrel.gov/solar/spectra/am1.5/ASTMG173/ASTMG173.html),
 			// summed and averaged in each bin (e.g. the value for 360nm is the average

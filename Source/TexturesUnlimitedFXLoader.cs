@@ -6,6 +6,7 @@ using System.Text;
 using ToolbarControl_NS;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
+using Log = KSPBuildTools.Log;
 
 namespace TUFX
 {
@@ -153,7 +154,7 @@ namespace TUFX
 		}
 		public void ModuleManagerPostLoad()
 		{
-			Log.log("TUFXLoader - MMPostLoad()");
+			Log.Message("TUFXLoader - MMPostLoad()");
 
 			//only load resources once.  In case of MM reload...
 			if (Resources == null)
@@ -208,7 +209,7 @@ namespace TUFX
 					if (!this.shaders.ContainsKey(shaders[i].name))
 					{
 						this.shaders.Add(shaders[i].name, shaders[i]);
-						Log.debug("Loading scattering shader: " + shaders[i].name);
+						Log.Debug("Loading scattering shader: " + shaders[i].name);
 					}
 				}
 				compShaders = bundle.LoadAllAssets<ComputeShader>();
@@ -218,7 +219,7 @@ namespace TUFX
 					if (!this.computeShaders.ContainsKey(compShaders[i].name))
 					{
 						this.computeShaders.Add(compShaders[i].name, compShaders[i]);
-						Log.debug("Loading scattering compute shader: " + compShaders[i].name);
+						Log.Debug("Loading scattering compute shader: " + compShaders[i].name);
 					}
 				}
 				bundle.Unload(false);
@@ -227,7 +228,7 @@ namespace TUFX
 			}
 			catch (Exception e)
 			{
-				Log.debug(e.ToString());
+				Log.Debug(e.ToString());
 			}
 
 			#region REGION - Load standard Post Process Effect Shaders
@@ -314,13 +315,13 @@ namespace TUFX
 			int len = textureListNodes.Length;
 			for (int i = 0; i < len; i++)
 			{
-				Log.debug("Loading TUFX_TEXTURES[" + textureListNodes[i].GetValue("name") + "]");
+				Log.Debug("Loading TUFX_TEXTURES[" + textureListNodes[i].GetValue("name") + "]");
 				ConfigNode[] effectTextureLists = textureListNodes[i].GetNodes("EFFECT");
 				int len2 = effectTextureLists.Length;
 				for (int k = 0; k < len2; k++)
 				{
 					string effectName = effectTextureLists[k].GetValue("name");
-					Log.debug("Loading EFFECT[" + effectName + "]");
+					Log.Debug("Loading EFFECT[" + effectName + "]");
 					if (!this.EffectTextureLists.TryGetValue(effectName, out TUFXEffectTextureList etl))
 					{
 						this.EffectTextureLists[effectName] = etl = new TUFXEffectTextureList();
@@ -331,13 +332,13 @@ namespace TUFX
 					{
 						string propName = names[m];
 						if (propName == "name") { continue; }//don't load textures for the 'name=' entry in the configs
-						Log.debug("Loading Textures for property [" + propName + "]");
+						Log.Debug("Loading Textures for property [" + propName + "]");
 						string[] values = effectTextureLists[k].GetValues(propName);
 						int len4 = values.Length;
 						for (int r = 0; r < len4; r++)
 						{
 							string texName = values[r];
-							Log.debug("Loading Texture for name [" + texName + "]");
+							Log.Debug("Loading Texture for name [" + texName + "]");
 							Texture2D tex = GameDatabase.Instance.GetTexture(texName, false);
 							if (tex != null)
 							{
@@ -347,12 +348,12 @@ namespace TUFX
 								}
 								else
 								{
-									Log.log("Ignoring duplicate texture: " + texName + " for effect: " + effectName + " property: " + propName);
+									Log.Message("Ignoring duplicate texture: " + texName + " for effect: " + effectName + " property: " + propName);
 								}
 							}
 							else
 							{
-								Log.error("Texture specified by path: " + texName + " was not found when attempting to load textures for effect: " + effectName + " propertyName: " + propName);
+								Log.Error("Texture specified by path: " + texName + " was not found when attempting to load textures for effect: " + effectName + " propertyName: " + propName);
 							}
 						}
 					}
@@ -376,7 +377,7 @@ namespace TUFX
 				}
 				else
 				{
-					Log.error("TUFX Profiles already contains profile for name: " + profile.ProfileName + ".  This is the result of a configuration with" +
+					Log.Error("TUFX Profiles already contains profile for name: " + profile.ProfileName + ".  This is the result of a configuration with" +
 						" a duplicate name; please check your configurations and remove any duplicates.  Only the first configuration parsed for any one name will be loaded.");
 				}
 			}
@@ -436,7 +437,7 @@ namespace TUFX
 		/// <param name="scene"></param>
 		private void onLevelLoaded(GameScenes gameScene)
 		{
-			Log.debug("TUFXLoader - onLevelLoaded( " + gameScene + " )");
+			Log.Debug("TUFXLoader - onLevelLoaded( " + gameScene + " )");
 
 			CloseConfigGui();
 
@@ -580,7 +581,7 @@ namespace TUFX
 
 
 
-			Log.error($"Profile {profileName} not found; falling back to {Configuration.EMPTY_PROFILE_NAME}");
+			Log.Error($"Profile {profileName} not found; falling back to {Configuration.EMPTY_PROFILE_NAME}");
 			return Profiles[Configuration.EMPTY_PROFILE_NAME];
 		}
 

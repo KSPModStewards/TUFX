@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using Log = KSPBuildTools.Log;
 
 namespace TUFX
 {
@@ -28,7 +29,7 @@ namespace TUFX
 			{
 				layerFlags[i] = (mask & (1 << i)) > 0;
 			}
-			Log.debug("Camera layer mask: " + camera.cullingMask);
+			Log.Debug("Camera layer mask: " + camera.cullingMask);
 		}
 
 		public void OnGUI()
@@ -45,7 +46,7 @@ namespace TUFX
 			GUILayout.Label("Skybox: ");
 			if (GUILayout.Button((camera.clearFlags == CameraClearFlags.Depth).ToString()))
 			{
-				Log.debug("Clear flags: " + camera.clearFlags);
+				Log.Debug("Clear flags: " + camera.clearFlags);
 				if (camera.clearFlags == CameraClearFlags.Skybox) { camera.clearFlags = CameraClearFlags.Depth; }
 				else { camera.clearFlags = CameraClearFlags.Skybox; }
 			}

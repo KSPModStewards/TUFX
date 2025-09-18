@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
+using Log = KSPBuildTools.Log;
 
 namespace TUFX
 {
@@ -78,7 +79,7 @@ namespace TUFX
 			}
 			catch (Exception e)
 			{
-				Log.debug(e.ToString());
+				Log.Debug(e.ToString());
 				return defaultValue;
 			}
 		}
@@ -242,27 +243,6 @@ namespace TUFX
 			}
 
 			return TUFXScene.Flight;
-		}
-	}
-
-	public static class Log
-	{
-		[Conditional("DEBUG")]
-		public static void debug(string msg)
-		{
-#if DEBUG
-            MonoBehaviour.print("[TUFX-DEBUG] " + msg);
-#endif
-		}
-		public static void log(string msg) { MonoBehaviour.print("[TUFX] " + msg); }
-		public static void exception(Exception ex)
-		{
-			Debug.LogException(ex);
-		}
-
-		public static void error(string msg)
-		{
-			Debug.LogError(msg);
 		}
 	}
 }

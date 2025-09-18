@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Linq;
 using TUFX;
 using System.Collections.Generic;
+using Log = KSPBuildTools.Log;
 
 namespace UnityEngine.Rendering.PostProcessing
 {
@@ -200,12 +201,12 @@ namespace UnityEngine.Rendering.PostProcessing
 
         internal void loadSplineParameter(ConfigNode node, string name, ParameterOverride<Spline> param)
         {
-            Log.debug("Loading spline for: " + GetType() + " with name: " + name);
+            Log.Debug("Loading spline for: " + GetType() + " with name: " + name);
             ConfigNode splineNode = node.GetNode("SPLINE", "name", name);
-            Log.debug("Node: " + splineNode);
+            Log.Debug("Node: " + splineNode);
             if (splineNode == null)
             {
-                Log.debug("Node was null...");
+                Log.Debug("Node was null...");
                 return;
             }
             string[] keys = splineNode.GetValues("key");
