@@ -18,6 +18,9 @@
 
 ## Unreleased
 
+- Fixed a lot of issues in IVA
+- Can now type decimals into TAA fields
+
 ### Changes
 
 * Actually hooked up Default-Internal profile as the default for IVA mode
