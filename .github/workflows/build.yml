@@ -5,9 +5,11 @@ on:
     branches: [ main ]
     paths:
       - '**/*.cs'
+      - '**/*.csproj'
   pull_request:
     paths:
       - '**/*.cs'
+      - '**/*.csproj'
   workflow_dispatch:
   workflow_call:
 
@@ -15,9 +17,4 @@ jobs:
   build:
     uses: KSPModdingLibs/KSPBuildTools/.github/workflows/build.yml@main
     with:
-      ksp-zip-url: https://github.com/KSPModdingLibs/KSPLibs/raw/main/KSP-1.12.5.zip
-      dependency-identifiers: |
-        ToolbarController
-        ClickThroughBlocker
-    secrets:
-      ksp-zip-password: ${{ secrets.KSP_ZIP_PASSWORD }}
+      use-ckan: true
