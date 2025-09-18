@@ -1,33 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="TUFX.version.props" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <RootNamespace>TUFX</RootNamespace>
     <AssemblyName>TUFX</AssemblyName>
     <TargetFramework>net4.8</TargetFramework>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>portable</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;UNITY_STANDALONE, UNITY_2017_1_OR_NEWER, UNITY_2017_2_OR_NEWER, UNITY_2017_3_OR_NEWER, UNITY_2018_1_OR_NEWER, UNITY_2018_2_OR_NEWER, UNITY_2018_3_OR_NEWER, UNITY_2019_1_OR_NEWER, UNITY_2019_2_OR_NEWER, UNITY_2019_3_OR_NEWER, ENABLE_VR_MODULE, ENABLE_VR</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>portable</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>UNITY_STANDALONE, UNITY_2017_1_OR_NEWER, UNITY_2017_2_OR_NEWER, UNITY_2017_3_OR_NEWER, UNITY_2018_1_OR_NEWER, UNITY_2018_2_OR_NEWER, UNITY_2018_3_OR_NEWER, UNITY_2019_1_OR_NEWER, UNITY_2019_2_OR_NEWER, UNITY_2019_3_OR_NEWER, ENABLE_VR_MODULE, ENABLE_VR</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
     <BinariesOutputRelativePath>GameData\TUFX\Plugins</BinariesOutputRelativePath>
     <GenerateKSPAssemblyAttribute>true</GenerateKSPAssemblyAttribute>
     <GenerateKSPAssemblyDependencyAttributes>true</GenerateKSPAssemblyDependencyAttributes>
   </PropertyGroup>
+  <ItemGroup>
+    <KSPVersionFile Include="$(RepoRootPath)\GameData\TUFX\TUFX.version">
+      <Destination>$(RepoRootPath)\GameData\TUFX\TUFX.version</Destination>
+      <KSP_Version_Min>1.12.3</KSP_Version_Min>
+    </KSPVersionFile>
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="ClickThroughBlocker">
       <HintPath>$(KSPRoot)\GameData\000_ClickThroughBlocker\Plugins\ClickThroughBlocker.dll</HintPath>
@@ -39,7 +30,7 @@
       <HintPath>$(KSPRoot)\GameData\001_ToolbarControl\Plugins\ToolbarControl.dll</HintPath>
       <Private>false</Private>
       <CKANIdentifier>ToolbarController</CKANIdentifier>
-	  <KSPAssemblyName>ToolbarController</KSPAssemblyName>
+      <KSPAssemblyName>ToolbarController</KSPAssemblyName>
       <KSPAssemblyVersion>1.0</KSPAssemblyVersion>
     </Reference>
   </ItemGroup>
@@ -49,7 +40,6 @@
     </None>
     <None Include="PostProcessing\.editorconfig" />
     <None Include="PostProcessing\Unity.Postprocessing.Runtime.asmdef" />
-    <None Include="Properties\AssemblyInfo.cs.versiontemplate" />
   </ItemGroup>
   <ItemGroup>
     <Publicize Include="Assembly-CSharp" IncludeCompilerGeneratedMembers="false" />
@@ -63,6 +53,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="KSPBuildTools" Version="0.0.3-alpha.4" />
+    <PackageReference Include="KSPBuildTools" Version="0.0.4" />
   </ItemGroup>
 </Project>
